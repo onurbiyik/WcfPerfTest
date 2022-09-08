@@ -8,7 +8,6 @@ using System.Text;
 
 namespace ConsoleApp1
 {
-    [MemoryDiagnoser]
     public class WcfClientSpeedTester
     {
         // private const string dasEndpointAddress = "http://localhost:2937/DasOnurBankService.svc";
@@ -27,22 +26,18 @@ namespace ConsoleApp1
             factory.Close();
         }
 
-        [Benchmark]
+
         public async Task<string> NewChannelEveryTime(int iteration)
         {
             var binding = new BasicHttpBinding();
             var address = new EndpointAddress(dasEndpointAddress);
             var factory = new ChannelFactory<IOnurBankServiceChannel>(binding, address);
 
-            
-
             List<Task> tasks = new();
-            TaskFactory tf = new();            
 
             for (int i = 0; i < iteration; i++)
             {                
-                var t = await tf.StartNew(async () =>
-                {
+                async Task CallIt() { 
                     using var chan = factory.CreateChannel();                    
                     try
                     {
@@ -50,21 +45,23 @@ namespace ConsoleApp1
                     }
                     catch (CommunicationException e)
                     {
-                        Console.WriteLine("communication exception");
+                        Console.Write("comm ex" + e.ToString());
                         chan.Abort();
                     }
                     catch (TimeoutException e)
                     {
-                        Console.WriteLine("timeout exception");
+                        Console.WriteLine("timeout exception" + e.ToString() );
                         chan.Abort();
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine("Generic exception " + e.Message);
+                        Console.WriteLine("Generic exception " + e.ToString());
                         chan.Abort();
                         throw;
                     }
-                });
+                }
+
+                var t = CallIt();
                 tasks.Add(t);
             }
             await Task.WhenAll(tasks.ToArray());
@@ -72,9 +69,7 @@ namespace ConsoleApp1
             return "";
         }
 
- 
 
-        [Benchmark]
         public async Task<string> UseOpenChannel(int iteration)
         {
             var binding = new BasicHttpBinding();
@@ -85,11 +80,10 @@ namespace ConsoleApp1
             chan.Open();
 
             List<Task> tasks = new();
-            TaskFactory tf = new();
 
             for (int i = 0; i < iteration; i++)
             {
-                var t = await tf.StartNew(async () =>
+                async Task CallIt()
                 {
                     try
                     {
@@ -97,24 +91,23 @@ namespace ConsoleApp1
                     }
                     catch (CommunicationException e)
                     {
-                        Console.WriteLine("communication exception");
+                        Console.WriteLine("communication exception" + e.ToString());
                         chan.Abort();
                     }
                     catch (TimeoutException e)
                     {
-                        Console.WriteLine("timeout exception");
+                        Console.WriteLine("timeout exception" + e.ToString());
                         chan.Abort();
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine("Generic exception " + e.Message);
+                        Console.WriteLine("Generic exception " + e.ToString());
                         chan.Abort();
                         throw;
                     }
-                });
+                }
+                var t = CallIt();
                 tasks.Add(t);
-
-                // tasks.Add(chan.GetDataAsync(7));
 
             }
             await Task.WhenAll(tasks);

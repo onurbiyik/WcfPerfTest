@@ -17,7 +17,7 @@ namespace OnurBankWCF
         public string GetData(int value)
         {
             var r = new Random();
-            Thread.Sleep(r.Next(500));
+            Thread.Sleep(r.Next(20000));
             return string.Format("You entered: {0}", value);
         }
 
