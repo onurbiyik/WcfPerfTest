@@ -27,7 +27,7 @@ var iterationCount = 2000;
 var loopCount = 1;
 
 Console.Write($"Warming up...");
-// await t.WarmUp();
+await t.WarmUp();
 Console.WriteLine($"Warmed up.");
 
 
