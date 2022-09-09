@@ -14,10 +14,10 @@ namespace OnurBankWCF
     // NOTE: In order to launch WCF Test Client for testing this service, please select Service1.svc or Service1.svc.cs at the Solution Explorer and start debugging.
     public class DasOnurBankService : IOnurBankService
     {
-        public string GetData(int value)
+        public async Task<string> GetData(int value)
         {
             var r = new Random();
-            Thread.Sleep(r.Next(20000));
+            await Task.Delay(r.Next(2000));
             return string.Format("You entered: {0}", value);
         }
 

@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace OnurBankWCF
 {
@@ -13,7 +14,7 @@ namespace OnurBankWCF
     {
 
         [OperationContract]
-        string GetData(int value);
+        Task<string> GetData(int value);
 
 
         [OperationContract]
