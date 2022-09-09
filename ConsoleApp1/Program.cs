@@ -27,7 +27,7 @@ var iterationCount = 1000;
 var loopCount = 1;
 
 await t.WarmUp();
-Console.WriteLine($"Warmed up. Running {loopCount} times {iterationCount} concurrent calls...");
+Console.WriteLine($"Warmed up.");
 
 
 
